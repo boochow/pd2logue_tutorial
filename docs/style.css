@@ -24,6 +24,7 @@ header h1 {
 }
 
 .card {
+  max-width: 1024px;
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -66,3 +67,14 @@ button:hover {
 .params input[type=range] {
   width: 100%;
 }
+
+.widget { max-width: 95%; margin: auto; }
+.row { width: 100%; margin-bottom: 10px; }
+.col { display: inline-block; }
+.events { vertical-align: top; margin: 10px; }
+.title { width: 80%; margin: 0 auto; }
+.transport { padding-left: 10px; }
+.parameter-name { width: 35%; text-align: right; }
+.parameter-slider { width: 45%; padding-left: 10px; }
+.parameter-slider input { vertical-align: middle; width: 100%; }
+.parameter-value { width: 10%; padding-left: 10px; text-align: left; }
