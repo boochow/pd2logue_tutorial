@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pure Data Effect Demo with Parameters</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>🎚 Pure Data WebAudio Effect Demo</h1>
+    <p>Control Pd patch parameters from the browser.</p>
+  </header>
+
+  <main class="gallery">
+    <div class="card">
+      <h2>Delay Effect</h2>
+      <p>Apply Pd-built hvcc WebAudio delay effect to a sample sound.</p>
+
+      <audio id="inputAudio" src="audio/input.wav" preload="auto" controls></audio>
+
+      <div class="buttons">
+        <button onclick="playEffect()">▶️ Play</button>
+        <button onclick="stopEffect()">⏹ Stop</button>
+      </div>
+
+      <div class="params">
+        <label>
+          Delay Time (ms): 
+          <input type="range" id="delay_time" min="10" max="1000" step="1" value="200"
+            oninput="updateParam('delay_time', this.value)">
+          <span id="val_delay_time">200</span>
+        </label>
+        <label>
+          Feedback: 
+          <input type="range" id="feedback" min="0" max="1" step="0.01" value="0.5"
+            oninput="updateParam('feedback', this.value)">
+          <span id="val_feedback">0.5</span>
+        </label>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Created by boochow instruments · Powered by hvcc WebAudio</p>
+  </footer>
+
+  <script type="module">
+    import { HvWebAudio } from "./demos/delay_fx.js";
+
+    let ctx = null;
+    let hv = null;
+    let source = null;
+
+    // Pdパッチ再生
+    async function playEffect() {
+      stopEffect();
+
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      hv = await HvWebAudio.new(ctx);
+
+      // 入力WAVをロード
+      const response = await fetch("audio/input.wav");
+      const arrayBuffer = await response.arrayBuffer();
+      const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+
+      // ソース→hvcc入力→スピーカー出力
+      source = ctx.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(hv.input);
+      hv.output.connect(ctx.destination);
+      source.start();
+
+      // 現在のスライダ値を初期送信
+      updateParam("delay_time", document.getElementById("delay_time").value);
+      updateParam("feedback", document.getElementById("feedback").value);
+
+      source.onended = () => stopEffect();
+      console.log("▶️ Effect playback started");
+    }
+
+    // パッチ停止
+    function stopEffect() {
+      if (source) { try { source.stop(); } catch(e){} source = null; }
+      if (hv) { hv.release(); hv = null; }
+      if (ctx) { ctx.close(); ctx = null; }
+      console.log("⏹ Stopped");
+    }
+
+    // スライダ変更時にPdパッチへ送信
+    function updateParam(name, val) {
+      document.getElementById(`val_${name}`).innerText = val;
+      if (hv) {
+        hv.sendFloatToReceiver(name, parseFloat(val));
+        console.log(`sendFloatToReceiver(${name}, ${val})`);
+      }
+    }
+  </script>
+</body>
+</html>

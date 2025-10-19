@@ -1,0 +1,68 @@
+body {
+  font-family: system-ui, sans-serif;
+  background: #f7f7f9;
+  color: #333;
+  margin: 0;
+}
+
+header {
+  text-align: center;
+  padding: 2em 1em;
+  background: linear-gradient(135deg, #a0d8ef, #f8e0f7);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2em;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5em;
+  padding: 2em;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 1.5em;
+  transition: transform 0.1s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
+.buttons {
+  margin-top: 1em;
+}
+
+button {
+  background: #0055cc;
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 0.5em;
+}
+
+button:hover {
+  background: #003d99;
+}
+
+.params {
+  margin-top: 1.5em;
+  text-align: left;
+}
+
+.params label {
+  display: block;
+  margin-bottom: 1em;
+}
+
+.params input[type=range] {
+  width: 100%;
+}
